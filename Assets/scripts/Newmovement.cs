@@ -1,0 +1,89 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
+
+
+public class Newmovement : MonoBehaviour
+{
+    [SerializeField] 
+    float speed = 5;
+    
+    
+    PlayerInput playerInput;
+
+    InputAction moveAction;
+    InputAction jumpAction;
+
+    public CharacterController controller;
+    public Transform cam;
+
+    public Vector3 velocity;
+    
+    public float turnSmoothTime = 0.1f;
+    float turnSmoothVelocity;
+
+    float xvel, yvel;
+
+    Rigidbody rb;
+    bool isGrounded;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        moveAction = playerInput.actions.FindAction("Move");
+        jumpAction = playerInput.actions.FindAction("Jump");
+
+        velocity = Vector3.zero;
+
+        rb = GetComponent<Rigidbody>();
+
+    
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        MovePlayer();
+        JumpPlayer();
+        yvel = rb.linearVelocity.y;
+
+    }
+
+
+    void MovePlayer()
+    {
+        Vector2 direction = moveAction.ReadValue<Vector2>();
+
+        if (direction.magnitude >= 0.1f)
+        {
+
+            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            //controller.Move(moveDir * speed * Time.deltaTime + (velocity*Time.deltaTime));
+
+            rb.linearVelocity = new Vector3( moveDir.x * speed, rb.linearVelocity.y, moveDir.z * speed);
+
+
+        }
+    }
+
+    void JumpPlayer()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || (Input.GetKeyDown(KeyCode.Space)))
+        {
+            yvel = 7f;
+            print("do jump");
+            
+        }
+    }
+
+
+
+
+
+
+}
