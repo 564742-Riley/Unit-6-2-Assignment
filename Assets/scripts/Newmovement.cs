@@ -1,15 +1,22 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 
 public class Newmovement : MonoBehaviour
 {
-    [SerializeField] 
-    float speed = 5;
-    
-    
+    [SerializeField]
+    float speed = 7f;
+
+    public float jumpspeed = 7f;
+
+    private Keyboard keyboard;
+
     PlayerInput playerInput;
+
+    public Animator anim;
 
     InputAction moveAction;
     InputAction jumpAction;
@@ -18,14 +25,23 @@ public class Newmovement : MonoBehaviour
     public Transform cam;
 
     public Vector3 velocity;
-    
+
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
 
     float xvel, yvel;
 
     Rigidbody rb;
-    bool isGrounded;
+    bool grounded;
+    public LayerMask groundLayer;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        keyboard = Keyboard.current;
+        anim = GetComponent<Animator>();
+    }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,17 +52,30 @@ public class Newmovement : MonoBehaviour
 
         velocity = Vector3.zero;
 
-        rb = GetComponent<Rigidbody>();
-
-    
     }
+
+
 
     // Update is called once per frame
     void Update()
     {
         MovePlayer();
-        JumpPlayer();
-        yvel = rb.linearVelocity.y;
+
+        /*
+        bool grounded = true;
+
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            rb.AddForce(Vector3.up * jumpspeed, ForceMode.Impulse);
+
+            anim.SetBool("isJumping", true);
+        }
+        else
+        {
+            anim.SetBool("isJumping", false);
+        }
+        */
+
 
     }
 
@@ -65,24 +94,18 @@ public class Newmovement : MonoBehaviour
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             //controller.Move(moveDir * speed * Time.deltaTime + (velocity*Time.deltaTime));
 
-            rb.linearVelocity = new Vector3( moveDir.x * speed, rb.linearVelocity.y, moveDir.z * speed);
+            rb.linearVelocity = new Vector3(moveDir.x * speed, rb.linearVelocity.y, moveDir.z * speed);
 
-
+            anim.SetFloat("Speed", 1);
         }
-    }
-
-    void JumpPlayer()
-    {
-        if (Input.GetKeyDown(KeyCode.LeftAlt) || (Input.GetKeyDown(KeyCode.Space)))
+        else
         {
-            yvel = 7f;
-            print("do jump");
-            
+            anim.SetFloat("Speed", 0);
         }
-    }
-
-
-
+    
+    
+    }   
+    
 
 
 

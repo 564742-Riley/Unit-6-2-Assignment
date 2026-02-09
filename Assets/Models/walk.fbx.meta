@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3c5ff1b34e32cd44ea5a91d6f5ec1794
+guid: 3a4a9e6c56119124fa24aeee714ee9d3
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,35 +31,6 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Walking
-      takeName: Take 001
-      internalID: 1827226128182048838
-      firstFrame: 1
-      lastFrame: 24
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0.9
-    - serializedVersion: 16
       name: mixamo.com
       takeName: mixamo.com
       internalID: -203655887218126122
@@ -73,9 +44,9 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
-      loopBlendPositionXZ: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
@@ -478,18 +449,18 @@ ModelImporter:
         length: 0
         modified: 0
     skeleton:
-    - name: Character_Gentleman_01(Clone)
+    - name: Base(Clone)
       parentName: 
       position: {x: -0, y: 0, z: 0}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 0.01, y: 0.01, z: 0.01}
     - name: Character_Gentleman_01
-      parentName: Character_Gentleman_01(Clone)
+      parentName: Base(Clone)
       position: {x: -0, y: -0.59884644, z: -6.6504583}
       rotation: {x: 0, y: -0, z: -0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: Pelvis
-      parentName: Character_Gentleman_01(Clone)
+      parentName: Base(Clone)
       position: {x: 0, y: 90.42919, z: 0}
       rotation: {x: 0.46113664, y: -0.5360532, z: -0.46113664, w: 0.5360532}
       scale: {x: 1, y: 1, z: 1}
