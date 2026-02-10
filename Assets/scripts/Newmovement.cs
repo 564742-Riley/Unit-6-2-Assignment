@@ -32,7 +32,9 @@ public class Newmovement : MonoBehaviour
     float xvel, yvel;
 
     Rigidbody rb;
-    bool grounded;
+    private bool grounded = false;
+    public float groundCheckDistance;
+    private float bufferCheckDistance = 0.1f;
     public LayerMask groundLayer;
 
     private void Awake()
@@ -61,8 +63,8 @@ public class Newmovement : MonoBehaviour
     {
         MovePlayer();
 
-        /*
-        bool grounded = true;
+        groundCheckDistance = (GetComponent<CapsuleCollider>().height / 2) + bufferCheckDistance;
+
 
         if (Input.GetKeyDown(KeyCode.Space) && grounded)
         {
@@ -74,8 +76,18 @@ public class Newmovement : MonoBehaviour
         {
             anim.SetBool("isJumping", false);
         }
-        */
+       
 
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -transform.up, out hit, groundCheckDistance))
+        {
+            grounded = true;
+        }
+        else
+        {
+            grounded = false;
+        }
+        
 
     }
 
@@ -101,6 +113,12 @@ public class Newmovement : MonoBehaviour
         else
         {
             anim.SetFloat("Speed", 0);
+            
+            if (grounded)
+            {
+                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            }
+
         }
     
     
