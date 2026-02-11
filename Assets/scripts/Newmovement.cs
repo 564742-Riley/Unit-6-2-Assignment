@@ -7,8 +7,12 @@ using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class Newmovement : MonoBehaviour
 {
-    [SerializeField]
-    float speed = 7f;
+    
+
+    float speed;
+    private float walkSpeed = 7f;
+
+    float sprintSpeed = 12f;
 
     public float jumpspeed = 7f;
 
@@ -20,6 +24,7 @@ public class Newmovement : MonoBehaviour
 
     InputAction moveAction;
     InputAction jumpAction;
+    InputAction sprintAction;
 
     public CharacterController controller;
     public Transform cam;
@@ -36,6 +41,8 @@ public class Newmovement : MonoBehaviour
     public float groundCheckDistance;
     private float bufferCheckDistance = 0.1f;
     public LayerMask groundLayer;
+   
+
 
     private void Awake()
     {
@@ -51,6 +58,7 @@ public class Newmovement : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Move");
         jumpAction = playerInput.actions.FindAction("Jump");
+        sprintAction = playerInput.actions.FindAction("Sprint");
 
         velocity = Vector3.zero;
 
@@ -62,6 +70,7 @@ public class Newmovement : MonoBehaviour
     void Update()
     {
         MovePlayer();
+        PlayerSprint();
 
         groundCheckDistance = (GetComponent<CapsuleCollider>().height / 2) + bufferCheckDistance;
 
@@ -75,6 +84,7 @@ public class Newmovement : MonoBehaviour
         else
         {
             anim.SetBool("isJumping", false);
+
         }
        
 
@@ -120,11 +130,24 @@ public class Newmovement : MonoBehaviour
             }
 
         }
-    
-    
-    }   
-    
 
+    }
+
+    void PlayerSprint()
+    {
+        if(sprintAction.IsPressed() && moveAction.ReadValue<Vector2>().magnitude > 0.1f)
+        {
+            speed = sprintSpeed;
+            anim.SetFloat("Speed", 2);
+
+        }
+        else
+        {
+            speed = walkSpeed;
+        }
+    
+    
+    }
 
 
 }
