@@ -1,8 +1,5 @@
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 
 public class Newmovement : MonoBehaviour
@@ -41,6 +38,7 @@ public class Newmovement : MonoBehaviour
     public float groundCheckDistance;
     private float bufferCheckDistance = 0.1f;
     public LayerMask groundLayer;
+    bool isJumping;
    
 
 
@@ -61,6 +59,7 @@ public class Newmovement : MonoBehaviour
         sprintAction = playerInput.actions.FindAction("Sprint");
 
         velocity = Vector3.zero;
+        isJumping = false;
 
     }
 
@@ -69,23 +68,33 @@ public class Newmovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        print("grounded=" + grounded);
+
         MovePlayer();
         PlayerSprint();
+        PlayerJump();
 
         groundCheckDistance = (GetComponent<CapsuleCollider>().height / 2) + bufferCheckDistance;
 
-
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
-        {
-            rb.AddForce(Vector3.up * jumpspeed, ForceMode.Impulse);
-
-            anim.SetBool("isJumping", true);
-        }
-        else
+        //check for landing
+        if (isJumping && grounded && rb.linearVelocity.y < 0 )
         {
             anim.SetBool("isJumping", false);
-
+            isJumping=false;
+            return;
         }
+
+
+        /*if (Input.GetKeyDown(KeyCode.Space) && grounded && (isJumping==false) )
+        {
+            rb.AddForce(Vector3.up * jumpspeed, ForceMode.Impulse);
+            anim.SetBool("isJumping", true);
+            isJumping=true;
+            return;
+        }*/
+
+
        
 
         RaycastHit hit;
@@ -106,31 +115,23 @@ public class Newmovement : MonoBehaviour
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
 
-        if (direction.magnitude >= 0.1f)
+        // If NO movement input → instantly stop all horizontal momentum
+        if (direction.magnitude < 0.1f)
         {
-
-            float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            //controller.Move(moveDir * speed * Time.deltaTime + (velocity*Time.deltaTime));
-
-            rb.linearVelocity = new Vector3(moveDir.x * speed, rb.linearVelocity.y, moveDir.z * speed);
-
-            anim.SetFloat("Speed", 1);
-        }
-        else
-        {
+            rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
             anim.SetFloat("Speed", 0);
-            
-            if (grounded)
-            {
-                rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-            }
-
+            return;
         }
 
+        float targetAngle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+        transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+        Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+
+        rb.linearVelocity = new Vector3(moveDir.x * speed, rb.linearVelocity.y, moveDir.z * speed);
+
+        anim.SetFloat("Speed", 1);
     }
 
     void PlayerSprint()
@@ -145,9 +146,18 @@ public class Newmovement : MonoBehaviour
         {
             speed = walkSpeed;
         }
-    
-    
-    }
 
+
+    }
+    void PlayerJump()
+    {
+        if (jumpAction.WasPressedThisFrame() && grounded && (isJumping == false))
+        {
+            rb.AddForce(Vector3.up * jumpspeed, ForceMode.Impulse);
+            anim.SetBool("isJumping", true);
+            isJumping = true;
+            return;
+        }
+    }
 
 }

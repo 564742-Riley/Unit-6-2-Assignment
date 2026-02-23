@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - ground
+  - UIPanelTrigger
   layers:
   - Default
   - TransparentFX
